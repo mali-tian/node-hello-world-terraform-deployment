@@ -32,5 +32,18 @@ resource "aws_ecs_task_definition" "node-hello-world-terraform" {
   ]
   tags                     = {}
   task_role_arn            = "<ROLE_ARN>"
-  container_definitions = "${file("task-definitions/service.json")}"
+  container_definitions = file("task-definitions/service.json")
+}
+
+resource "aws_ecs_service" "node-hello-world-service" {
+  name          = "node-hello-world"
+  cluster       = aws_ecs_cluster.node-hello-world-terraform.id
+  desired_count = 1
+  launch_type = "FARGATE"
+  task_definition = aws_ecs_task_definition.node-hello-world-terraform.arn
+  network_configuration {
+    subnets = ["subnet-ab1fd1f2", "subnet-d521229c", "subnet-c8ecffaf"]
+    security_groups = ["sg-04a2ade8b63d1ce61"]
+    assign_public_ip = true
+  }
 }

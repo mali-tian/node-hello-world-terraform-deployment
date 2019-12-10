@@ -5,5 +5,4 @@ the image saved at ECR
 
 ##### Need to fulfill all required parameters in `deployment.tf` and `task-definitions/service.json`
 
-
 Run `terraform apply` to deploy the `task definitions` and the `cluster`
