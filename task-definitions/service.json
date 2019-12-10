@@ -1,0 +1,28 @@
+[
+  {
+    "name": "node-hello-world-terraform-container",
+    "image": "<IMAGE>",
+    "cpu": 0,
+    "environment": [],
+    "memory": null,
+    "essential": true,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/hello-world-task-terraform",
+        "awslogs-region": "ap-southeast-1",
+        "awslogs-stream-prefix": "ecs"
+
+      }
+    },
+    "mountPoints": [],
+    "portMappings": [
+      {
+        "containerPort": 3000,
+        "hostPort": 3000,
+        "protocol": "tcp"
+      }
+    ],
+    "valumesForm": []
+  }
+]
