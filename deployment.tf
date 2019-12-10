@@ -33,13 +33,4 @@ resource "aws_ecs_task_definition" "node-hello-world-terraform" {
   tags                     = {}
   task_role_arn            = "<ROLE_ARN>"
   container_definitions = "${file("task-definitions/service.json")}"
-
-  volume {
-    name = "hello-world-storage"
-
-    docker_volume_configuration {
-      scope         = "shared"
-      autoprovision = true
-    }
-  }
 }
