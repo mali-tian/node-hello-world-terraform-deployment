@@ -138,6 +138,9 @@ resource "aws_ecs_service" "node-hello-world-service" {
   network_configuration {
     subnets = ["subnet-ab1fd1f2", "subnet-d521229c", "subnet-c8ecffaf"]
     security_groups = ["sg-04a2ade8b63d1ce61"]
+    # Need to assign a public ip for the service, as it is deployed in public subnets
+    # its elastic network interface requires a route to the internet to pull container images
+    # if not set to true the task can not launch, will meet "CannotPullContainerError" 
     assign_public_ip = true
   }
 
