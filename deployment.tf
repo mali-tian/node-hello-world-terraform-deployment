@@ -83,7 +83,7 @@ resource "aws_lb" "node-hello-world-lb" {
   name               = "node-hello-world-lb-tg"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["sg-04a2ade8b63d1ce61"]
+  security_groups    = [aws_security_group.node_hello_world-lb_security_group.id]
   subnets            = ["subnet-ab1fd1f2", "subnet-d521229c", "subnet-c8ecffaf"]
 
   enable_deletion_protection = false
@@ -137,7 +137,7 @@ resource "aws_ecs_service" "node-hello-world-service" {
   task_definition = aws_ecs_task_definition.node-hello-world-terraform.arn
   network_configuration {
     subnets = ["subnet-ab1fd1f2", "subnet-d521229c", "subnet-c8ecffaf"]
-    security_groups = ["sg-04a2ade8b63d1ce61"]
+    security_groups = [aws_security_group.node_hello_world_ecs_tasks_security_group.id]
     # Need to assign a public ip for the service, as it is deployed in public subnets
     # its elastic network interface requires a route to the internet to pull container images
     # if not set to true the task can not launch, will meet "CannotPullContainerError" 
