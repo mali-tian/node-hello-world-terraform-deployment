@@ -79,6 +79,39 @@ resource "aws_iam_role_policy" "ecs_task_execution_policy" {
 EOF
 }
 
+resource "aws_lb" "node-hello-world-lb" {
+  name               = "node-hello-world-lb-tg"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = ["sg-04a2ade8b63d1ce61"]
+  subnets            = ["subnet-ab1fd1f2", "subnet-d521229c", "subnet-c8ecffaf"]
+
+  enable_deletion_protection = false
+
+  tags = {
+    Environment = "test"
+  }
+}
+
+resource "aws_lb_listener" "node-hello-world-lb-listener" {
+  load_balancer_arn = aws_lb.node-hello-world-lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.node-hello-world-lb-tg.arn
+  }
+}
+
+resource "aws_lb_target_group" "node-hello-world-lb-tg" {
+  name        = "node-hello-world-lb-tg"
+  port        = "80"
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = "vpc-8c240aeb"
+}
+
 resource "aws_ecs_cluster" "node-hello-world-terraform" {
   name = "node-hello-world-terraform"
 }
@@ -93,7 +126,6 @@ resource "aws_ecs_task_definition" "node-hello-world-terraform" {
       "FARGATE",
   ]
   tags                     = {}
-  task_role_arn            = "<ROLE_ARN>"
   container_definitions = file("task-definitions/service.json")
 }
 
@@ -108,4 +140,11 @@ resource "aws_ecs_service" "node-hello-world-service" {
     security_groups = ["sg-04a2ade8b63d1ce61"]
     assign_public_ip = true
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.node-hello-world-lb-tg.arn
+    container_name   = "node-hello-world-terraform"
+    container_port   = 3000
+  }
+  depends_on = [aws_lb_listener.node-hello-world-lb-listener, aws_iam_role.ecs_task_execution_role]
 }

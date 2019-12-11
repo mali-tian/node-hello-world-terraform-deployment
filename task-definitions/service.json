@@ -1,6 +1,6 @@
 [
   {
-    "name": "node-hello-world-terraform-container",
+    "name": "node-hello-world-terraform",
     "image": "<IMAGE>",
     "cpu": 0,
     "environment": [],
@@ -9,7 +9,7 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "/ecs/hello-world-task-terraform",
+        "awslogs-group": "/ecs/hello-world-task",
         "awslogs-region": "ap-southeast-1",
         "awslogs-stream-prefix": "ecs"
 
